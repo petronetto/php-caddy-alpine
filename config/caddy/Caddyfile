@@ -1,5 +1,5 @@
-localhost {
-    root /app
+0.0.0.0:80, 0.0.0.0:443 {
+    root /app/public
     tls petronetto@xdevel.com.br
     gzip
 

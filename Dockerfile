@@ -6,6 +6,7 @@ MAINTAINER Juliano Petronetto <juliano@petronetto.com.br>
 RUN apk --update add \
         curl \
         libcap \
+        openssh-client \
         supervisor \
         php7 \
         php7-dom \
@@ -51,7 +52,6 @@ WORKDIR /app
 
 # Set UID for www-data user to 33
 RUN deluser xfs \
-    # && delgroup www-data \
     && addgroup -g 33 -S www-data \
     && adduser -u 33 -D -S -G www-data -h /app -g www-data www-data
 
