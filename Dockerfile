@@ -5,6 +5,7 @@ MAINTAINER Juliano Petronetto <juliano@petronetto.com.br>
 # Install packages
 RUN apk --update add \
         curl \
+        libcap \
         supervisor \
         php7 \
         php7-dom \
@@ -31,8 +32,8 @@ RUN curl --silent --show-error --fail --location \
       --header "Accept: application/tar+gzip, application/x-gzip, application/octet-stream" -o - \
       "https://caddyserver.com/download/build?os=linux&arch=amd64&features=${plugins}" \
     | tar --no-same-owner -C /usr/bin/ -xz caddy \
- && chmod 0755 /usr/bin/caddy \  
- && /usr/bin/caddy -version
+    && chmod 0755 /usr/bin/caddy \
+    && setcap cap_net_bind_service=+ep /usr/bin/caddy
 
 # Configure Caddy
 COPY config/caddy/Caddyfile /etc/Caddyfile

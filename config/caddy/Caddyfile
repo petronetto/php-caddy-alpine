@@ -1,8 +1,6 @@
-0.0.0.0 {
+localhost {
     root /app
     tls petronetto@xdevel.com.br
-    log /www/logs/access.log
-    errors /www/logs/error.log
     gzip
 
     fastcgi / /var/run/php7-fpm.sock php
