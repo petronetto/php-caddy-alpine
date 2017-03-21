@@ -8,6 +8,14 @@ RUN apk --update add \
         libcap \
         openssh-client \
         supervisor \
+        gd \
+        freetype \
+        libpng \
+        libjpeg-turbo \
+        freetype-dev \
+        libpng-dev \
+        nodejs \
+        git \
         php7 \
         php7-dom \
         php7-fpm \
@@ -15,18 +23,24 @@ RUN apk --update add \
         php7-mcrypt \
         php7-opcache \
         php7-pdo \
+        php7-pdo_mysql \
         php7-pdo_pgsql \
+        php7-pdo_sqlite \
         php7-xml \
         php7-phar \
         php7-openssl \
         php7-json \
         php7-ctype \
         php7-session \
-
+        php7-gd \
+        php7-zlib \
     && rm -rf /var/cache/apk/*
 
 # Creating symbolic link to php
 RUN ln -s /usr/bin/php7 /usr/bin/php
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 
 # Install Caddy
 RUN curl --silent --show-error --fail --location \
@@ -40,7 +54,7 @@ RUN curl --silent --show-error --fail --location \
 COPY config/caddy/Caddyfile /etc/Caddyfile
 
 # Configure PHP-FPM
-COPY config/php/php.ini /etc/php7/conf.d/zzz_custom.ini
+COPY config/php/php.ini /etc/php7/php.ini
 COPY config/php/www.conf /etc/php7/php-fpm.d/www.conf
 
 # Configure supervisord
@@ -50,10 +64,9 @@ COPY config/supervisord.conf /etc/supervisord.conf
 RUN mkdir -p /app
 WORKDIR /app
 
-# Set UID for www-data user to 33
-RUN deluser xfs \
-    && addgroup -g 33 -S www-data \
-    && adduser -u 33 -D -S -G www-data -h /app -g www-data www-data
+# Set UID for www user to 1000
+RUN addgroup -g 1000 -S www \
+    && adduser -u 1000 -D -S -G www -h /app -g www www
 
 # Start Supervisord
 ADD config/start.sh /start.sh
